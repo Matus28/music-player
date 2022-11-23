@@ -1,0 +1,57 @@
+.music-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.music-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.fas.fa-backward {
+  transform: rotate(180deg);
+  height: 20px;
+}
+
+.fas.fa-play {
+  width: 20px;
+  height: 20px;
+}
+
+.fas.fa-pause {
+  width: 20px;
+  height: 20px;
+}
+
+.fas.fa-forward {
+  height: 20px;
+}
+
+#cover {
+  height: 300px;
+}
+
+.progress-container {
+  background: lightgray;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px 0;
+  height: 4px;
+  width: 400px;
+}
+
+.progress {
+  background: black;
+  border-radius: 5px;
+  height: 100%;
+  width: 0;
+  transition: width 0.1s linear;
+}
