@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="./style.css">
+  <script defer type="module" src="./index.js"></script>
   <title>Fox-player</title>
 </head>
 <body>
@@ -12,11 +14,11 @@
     <div class="player-body">
       
       <div class="logo">
-        <img src="../../img/foxplayer.png" alt="Logo of the foxplayer">
+        <img src="./img/foxplayer.png" alt="Logo of the foxplayer">
       </div>
 
       <div class="current-playing">
-        <img class="current-playing image" src="../../img/music-placeholder.png" alt="Image of current song album">
+        <img class="current-playing image" src="/img/music-placeholder.png" alt="Image of current song album">
         <h2 class="current-playlist">This is place for current playlist</h2>
         <p>Owner Name</p>
         <svg class="add-to-playlist" viewBox="0 0 32 32" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 32 32"><path d="M28 14H18V4a2 2 0 0 0-4 0v10H4a2 2 0 0 0 0 4h10v10a2 2 0 0 0 4 0V18h10a2 2 0 0 0 0-4z" fill="#a3a3a3" class="fill-000000"></path></svg>
@@ -60,20 +62,17 @@
         </table>
       </div>
  
- 
- 
       <div class="tracks">
         <table cellspacing="0" cellpadding="0" class="tracks-table">
           <tbody>
             <tr>
-              <td>1</td class="first-column">
-              <td>Fortune Days (DJ Vadim Remix)</td class="second-column">
-              <td>3:30</td class="third-column">
+              <td class="first-column">1</td>
+              <td class="second-column">Fortune Days (DJ Vadim Remix)</td>
+              <td class="third-column">3:30</td>
             </tr>
           </tbody>
         </table>
       </div>
-
 
       <div class="control-panel">
         <div class="playing-buttons">
@@ -112,6 +111,7 @@
           </svg>
         </div>
         <div class="playing-slider">
+          <pre id="output"></pre>
           <input type="range" min="1" max="100" value="50" class="playing-slider-input">
         </div>
         <svg class="shuffle-button" xmlns="http://www.w3.org/2000/svg" width="17" height="14" viewBox="0 0 17 14">
@@ -138,12 +138,15 @@
             <path id="Volume_Icon" data-name="Volume Icon" class="cls-1" d="M616.041,383.138L612,387.02h-3a1.01,1.01,0,0,0-1,1v5.952a1.045,1.045,0,0,0,1,1.044h3l4.062,3.894s0.938,0.549.938-1.078V384.1C617,382.455,616.041,383.138,616.041,383.138Z" transform="translate(-608 -383)"/>
           </svg>
           <div class="volume-slider">
-            <input type="range" min="1" max="100" value="50" class="volume-slider-input">
+            <!-- <input type="range" min="1" max="100" value="50" class="volume-slider-input"> -->
+            <input type="range" id="rangeslider" />
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  
   
 </body>
 </html>
