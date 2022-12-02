@@ -3,6 +3,7 @@
 const query = require('./db');
 const {getFilesName, getMetadata} = require('./music-data');
 
+// Initialization if playslists/trackslist was not created, or All tracks not contain all songs from root directory
 const initTable = async (metadataList) => {
   let output = await query(`CREATE TABLE IF NOT EXISTS playlists (
     id int(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -18,32 +19,45 @@ const initTable = async (metadataList) => {
     playlist_id INT,
     FOREIGN KEY (playlist_id) REFERENCES playlists(id)
     );`)
-  let allTracks = await showSpecificPlaylist(`All tracks`)
-  if( allTracks.length === 0) {
-    let insertedPlaylist = await insertPlaylist('All tracks', 1);
-    let insertedTracklist = await insertTrackslist(insertedPlaylist[0].id, metadataList);
-  } else if (false) {
+  let allTracks = await showSpecificPlaylist(`All tracks`);
+  let needUpdate = await checkIfNeedsUpdate(metadataList.length, allTracks[0].id);
+  let favorites = await showSpecificPlaylist(`Favorites`);
+  let insertedPlaylist = [];
+  let insertedTracklist = [];
 
+  if( allTracks.length === 0) {
+    insertedPlaylist = await insertPlaylist('All tracks', 1);
+    insertedTracklist = await insertTrackslist(insertedPlaylist[0].id, metadataList);
+  } else if (needUpdate) {
+    let actualTracklist = await deleteTrackslist(allTracks[0].id); 
+    insertedTracklist = await insertTrackslist(allTracks[0].id, metadataList);
   }
-  // let needUpdate = await checkIfNeedsUpdate(metadataList.length);
+
+  if(favorites.length === 0) {
+    insertedPlaylist = await insertPlaylist('Favorites', 1);
+  }
 }
 
+// Show playlist based on playlist TITLE
 const showSpecificPlaylist = async (playlistName) => {
   let output = await query(`SELECT * FROM playlists WHERE title = ?`, [playlistName]);
   return output;
 }
 
+// Show tracklist (songs included to specific playlist ID)
 const showSpecificTrackList = async (playlistId) => {
   let output = await query(`SELECT * FROM trackslist WHERE playlist_id = ?`, [playlistId]);
   return output;
 }
 
+// INSERT playlist in to the playlist table
 const insertPlaylist = async (title, systemRank) => {
   let report = await query(`INSERT INTO playlists (title, system_rank) VALUES (?, ?)`, [title, systemRank]);
   let output = await query(`SELECT * FROM playlists WHERE id = ?`, [report.insertId]);
   return output;
 }
 
+// INSERT tracks/songs in to the trackslist table
 const insertTrackslist = async (playlist_id, metadataList) => {
   let output;
   for (let i = 0; i < metadataList.length; i++) {
@@ -54,10 +68,23 @@ const insertTrackslist = async (playlist_id, metadataList) => {
   return createdTrackslist;
 }
 
-// const checkIfNeedsUpdate = async (length) => {
-//   const lengthDB = await query('SELECT COUNT(*) FROM ')
-// }
+// DELETE songs from trackslist table based on playlist ID
+const deleteTrackslist = async (playlistId) => {
+  let report = await query(`DELETE FROM trackslist WHERE playlist_id = ?`, [playlistId]);
+  let output = await query(`SELECT * FROM trackslist`);
+  return output;  
+}
 
+// CHECKing if there are all songs/tracks in trackslist for specific playlist
+const checkIfNeedsUpdate = async (length, playlistId) => {
+  const lengthDB = await query(`SELECT COUNT(*) FROM trackslist WHERE playlist_id = ?`, [playlistId]);
+  if (length !== lengthDB[0]["COUNT(*)"]) {
+    return true;
+  }
+  return false;
+}
+
+// Showing actual playlists (with basic initialization of tables if they are not existing)
 const showPlaylists = async () => {
   const list = await getFilesName();
   let metadataList = [];
