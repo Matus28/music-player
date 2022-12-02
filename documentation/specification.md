@@ -5,7 +5,7 @@ first two must be implemented as the spec says. The rest are more like
 recommendations, you can diverge from them if you feel like, but keep in mind
 you have to deliver.
 
-![main ui with labels](../img/musicplayer_labelled.png)
+![main ui with labels](img/musicplayer_labelled.png)
 
 ## Frontend
 

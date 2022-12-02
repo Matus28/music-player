@@ -2,7 +2,7 @@
 
 A browser based local music player.
 
-![main ui](img/musicplayer.png)
+![main ui](documentation/img/musicplayer.png)
 
 Following this exact design is not mandatory, but keep close to the layout and
 maintain all functionality.
