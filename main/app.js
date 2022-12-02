@@ -13,8 +13,17 @@ app.get('/', (req, res) => {
 });
 
 app.get('/playlists', async (req, res) => {
-  let data = await dbMethods.showPlaylists();
-  res.status(200).json(data);
+  try {
+    let data = await dbMethods.showPlaylists();
+    if(data.length === 0) {
+      throw new Error(`Error: Playlists were not found!`)
+    }
+    res.status(200).json(data);
+  } catch(err) {
+    console.log(err);
+    res.status(404);
+    return;
+  }
   
 })
 
