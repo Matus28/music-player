@@ -19,9 +19,9 @@ const initTable = async (metadataList) => {
     playlist_id INT,
     FOREIGN KEY (playlist_id) REFERENCES playlists(id)
     );`)
-  let allTracks = await showSpecificPlaylist(`All tracks`);
+  let allTracks = await showSpecificPlaylist(`All tracks`, '');
   let needUpdate = await checkIfNeedsUpdate(metadataList.length, allTracks[0].id);
-  let favorites = await showSpecificPlaylist(`Favorites`);
+  let favorites = await showSpecificPlaylist(`Favorites`, '');
   let insertedPlaylist = [];
   let insertedTracklist = [];
 
@@ -38,11 +38,23 @@ const initTable = async (metadataList) => {
   }
 }
 
-// Show playlist based on playlist TITLE
-const showSpecificPlaylist = async (playlistName) => {
-  let output = await query(`SELECT * FROM playlists WHERE title = ?`, [playlistName]);
+const showAllPlaylists = async () => {
+  let output = [];
+  output = await query(`SELECT * FROM playlists`);
   return output;
 }
+
+// Show playlist based on playlist TITLE
+const showSpecificPlaylist = async (playlistName, playlistId) => {
+  let output = [];
+  if(playlistId.length === 0 && playlistName.length > 0) {
+    output = await query(`SELECT * FROM playlists WHERE title = ?`, [playlistName]);
+  } else if(playlistId.length > 0 && playlistName.length === 0) {
+    output = await query(`SELECT * FROM playlists WHERE id = ?`, [playlistId]);
+  }
+  return output;
+}
+
 
 // Show tracklist (songs included to specific playlist ID)
 const showSpecificTrackList = async (playlistId) => {
@@ -75,6 +87,13 @@ const deleteTrackslist = async (playlistId) => {
   return output;  
 }
 
+// DELETE playlist by playlist id
+const deletePlaylist = async (playlistId) => {
+  let report = await query(`DELETE FROM playlists WHERE id = ?`, [playlistId]);
+  let output = await showAllPlaylists();
+  return output;
+}
+
 // CHECKing if there are all songs/tracks in trackslist for specific playlist
 const checkIfNeedsUpdate = async (length, playlistId) => {
   const lengthDB = await query(`SELECT COUNT(*) FROM trackslist WHERE playlist_id = ?`, [playlistId]);
@@ -86,6 +105,7 @@ const checkIfNeedsUpdate = async (length, playlistId) => {
 
 // Showing actual playlists (with basic initialization of tables if they are not existing)
 const showPlaylists = async () => {
+  let output = [];
   const list = await getFilesName();
   let metadataList = [];
   for (let i = 0; i < list.length; i++) {
@@ -94,8 +114,13 @@ const showPlaylists = async () => {
   }
   // console.log(metadataList);
   initTable(metadataList);
+  output = await query(`SELECT * FROM playlists`);
+  return output;
 }
 
+
 module.exports = {
-  showPlaylists
+  showPlaylists,
+  insertPlaylist,
+  deletePlaylist
 }
